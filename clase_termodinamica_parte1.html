@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Termodinámica — Clase 1</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0f13;
+    --surface: #16181f;
+    --surface2: #1e2029;
+    --border: #2a2d38;
+    --accent: #e05c2e;
+    --accent2: #f5a24b;
+    --accent3: #4bb8f5;
+    --text: #e8e9ed;
+    --muted: #7a7d8c;
+    --green: #4bcc8a;
+    --radius: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    padding: 80px 40px 60px;
+    text-align: center;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(224,92,46,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-tag {
+    display: inline-block;
+    background: rgba(224,92,46,0.15);
+    border: 1px solid rgba(224,92,46,0.4);
+    color: var(--accent2);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2.4rem, 5vw, 3.8rem);
+    line-height: 1.15;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #fff 40%, var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p {
+    color: var(--muted);
+    font-size: 1rem;
+    max-width: 520px;
+    margin: 0 auto 32px;
+  }
+  .hero-pills {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .pill {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .pill span { color: var(--text); font-weight: 500; }
+
+  /* LAYOUT */
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* TIMELINE */
+  .timeline {
+    padding: 60px 0 20px;
+  }
+  .timeline-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    margin-bottom: 32px;
+    color: var(--text);
+  }
+  .timeline-title span { color: var(--accent); }
+
+  .block {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 40px;
+    position: relative;
+  }
+  .block::before {
+    content: '';
+    position: absolute;
+    left: 22px;
+    top: 52px;
+    bottom: -40px;
+    width: 1px;
+    background: var(--border);
+  }
+  .block:last-child::before { display: none; }
+
+  .block-time {
+    flex-shrink: 0;
+    width: 46px;
+    height: 46px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent2);
+    font-weight: 500;
+  }
+
+  .block-content {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    transition: border-color 0.2s;
+  }
+  .block-content:hover { border-color: rgba(224,92,46,0.35); }
+
+  .block-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .block-header h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    color: var(--text);
+  }
+  .block-badge {
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+  .badge-teoria { background: rgba(75,184,245,0.12); color: var(--accent3); border: 1px solid rgba(75,184,245,0.25); }
+  .badge-ejercicio { background: rgba(75,204,138,0.12); color: var(--green); border: 1px solid rgba(75,204,138,0.25); }
+  .badge-cierre { background: rgba(245,162,75,0.12); color: var(--accent2); border: 1px solid rgba(245,162,75,0.25); }
+
+  /* THEORY CARDS */
+  .theory-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+    margin: 16px 0;
+  }
+  .theory-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .theory-card .icon { font-size: 1.5rem; margin-bottom: 8px; }
+  .theory-card h4 { font-size: 0.85rem; font-weight: 600; color: var(--accent2); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .theory-card p { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+
+  /* FORMULA BOX */
+  .formula-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 14px 0;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--accent2);
+  }
+  .formula-box .label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .formula-box .eq { font-size: 1.05rem; }
+  .formula-box .vars { margin-top: 8px; font-size: 0.78rem; color: var(--muted); font-family: 'DM Sans', sans-serif; }
+  .formula-box .vars span { color: var(--text); }
+
+  /* EXERCISE */
+  .exercise {
+    background: rgba(75,204,138,0.05);
+    border: 1px solid rgba(75,204,138,0.2);
+    border-radius: 10px;
+    padding: 18px;
+    margin: 14px 0;
+  }
+  .exercise .ex-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--green);
+    margin-bottom: 10px;
+  }
+  .exercise p { font-size: 0.9rem; color: var(--text); margin-bottom: 8px; }
+  .exercise .hint {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(75,204,138,0.15);
+  }
+  details summary {
+    cursor: pointer;
+    font-size: 0.82rem;
+    color: var(--accent3);
+    font-weight: 500;
+    user-select: none;
+    list-style: none;
+  }
+  details summary::before { content: '▶ '; font-size: 0.7rem; }
+  details[open] summary::before { content: '▼ '; }
+  details .answer {
+    margin-top: 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.82rem;
+    color: var(--accent2);
+    background: var(--bg);
+    border-radius: 6px;
+    padding: 12px;
+    line-height: 1.8;
+  }
+
+  /* TABLE */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 0.85rem;
+  }
+  thead tr { background: var(--surface2); }
+  th {
+    text-align: left;
+    padding: 10px 14px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid rgba(42,45,56,0.5);
+    color: var(--text);
+  }
+  tr:last-child td { border-bottom: none; }
+  .highlight-row td { color: var(--accent2); }
+
+  /* COMPARISON */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 14px 0;
+  }
+  .compare-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    text-align: center;
+  }
+  .compare-card .c-icon { font-size: 2rem; margin-bottom: 8px; }
+  .compare-card h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 6px; }
+  .compare-card p { font-size: 0.78rem; color: var(--muted); }
+  .c-aislado { border-color: rgba(224,92,46,0.3); }
+  .c-cerrado { border-color: rgba(75,184,245,0.3); }
+  .c-abierto { border-color: rgba(75,204,138,0.3); }
+
+  /* BULLETS */
+  .bullet-list { list-style: none; margin: 12px 0; }
+  .bullet-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
+  .bullet-list li::before {
+    content: '→';
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .bullet-list li strong { color: var(--text); }
+
+  /* DIVIDER TEXT */
+  .section-divider {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1rem;
+    color: var(--muted);
+    margin: 20px 0 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* NOTE BOX */
+  .note {
+    background: rgba(75,184,245,0.06);
+    border: 1px solid rgba(75,184,245,0.2);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin: 12px 0;
+  }
+  .note strong { color: var(--accent3); }
+
+  /* RESOURCES SECTION */
+  .resources-section {
+    padding: 40px 0 80px;
+    border-top: 1px solid var(--border);
+    margin-top: 20px;
+  }
+  .resources-section h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+  }
+  .resources-section h2 span { color: var(--accent); }
+  .resources-section .sub {
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-bottom: 28px;
+  }
+  .resources-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .resource-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: border-color 0.2s, transform 0.2s;
+    cursor: pointer;
+  }
+  .resource-card:hover {
+    border-color: rgba(224,92,46,0.4);
+    transform: translateY(-2px);
+  }
+  .resource-card .r-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .resource-card .r-icon { font-size: 1.8rem; }
+  .resource-card .r-tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 5px;
+  }
+  .tag-sim { background: rgba(75,204,138,0.12); color: var(--green); }
+  .tag-lab { background: rgba(75,184,245,0.12); color: var(--accent3); }
+  .tag-video { background: rgba(224,92,46,0.12); color: var(--accent2); }
+  .resource-card h4 { font-size: 0.95rem; font-weight: 600; color: var(--text); }
+  .resource-card p { font-size: 0.82rem; color: var(--muted); flex: 1; }
+  .resource-card .r-link {
+    font-size: 0.78rem;
+    color: var(--accent3);
+    font-family: 'DM Mono', monospace;
+    word-break: break-all;
+  }
+
+  /* SUMMARY */
+  .summary-box {
+    background: linear-gradient(135deg, rgba(224,92,46,0.08), rgba(75,184,245,0.06));
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .summary-box h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+    color: var(--accent2);
+  }
+  .formula-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .f-chip {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--accent2);
+  }
+
+  @media (max-width: 600px) {
+    .hero { padding: 50px 20px 40px; }
+    .compare-grid { grid-template-columns: 1fr; }
+    .block { flex-direction: column; }
+    .block-time { width: 38px; height: 38px; }
+    .block::before { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">Clase 1 · Universidad · Primer Año</div>
+  <h1>Termodinámica<br><em>Fundamentos</em></h1>
+  <p>Sistema, temperatura, dilatación térmica y las leyes que gobiernan el calor.</p>
+  <div class="hero-pills">
+    <div class="pill">⏱ <span>60 minutos</span></div>
+    <div class="pill">📖 <span>Teoría + Ejercicios</span></div>
+    <div class="pill">🔬 <span>Labs online</span></div>
+    <div class="pill">🎓 <span>Prof. Macarena Domínguez</span></div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+  <!-- PLAN -->
+  <div class="timeline">
+    <h2 class="timeline-title">Plan de clase — <span>4 bloques</span></h2>
+
+    <!-- BLOQUE 1 -->
+    <div class="block">
+      <div class="block-time">0–15</div>
+      <div class="block-content">
+        <div class="block-header">
+          <h3>Termodinámica y Sistemas</h3>
+          <span class="block-badge badge-teoria">Teoría</span>
+        </div>
+
+        <div class="section-divider">¿Qué es la termodinámica?</div>
+        <p style="font-size:0.88rem; color:var(--muted); margin-bottom:14px;">
+          Disciplina que estudia los fenómenos físicos <strong style="color:var(--text)">de forma macroscópica</strong>, a través de variables medibles: <strong style="color:var(--text)">presión, volumen y temperatura</strong>. No hace suposiciones sobre la constitución de la materia.
+        </p>
+
+        <div class="note"><strong>Conexión cotidiana:</strong> un motor de auto, una olla a presión, un refrigerador — todos son sistemas termodinámicos. ¿Por qué el motor se calienta? ¿Por qué la comida en el fridge no se pudre tan rápido?</div>
+
+        <div class="section-divider">Las 4 leyes</div>
+        <div class="theory-grid">
+          <div class="theory-card">
+            <div class="icon">🌡️</div>
+            <h4>Ley Cero</h4>
+            <p>Equilibrio térmico y concepto de temperatura</p>
+          </div>
+          <div class="theory-card">
+            <div class="icon">⚡</div>
+            <h4>Primera Ley</h4>
+            <p>Energía interna — conservación de la energía</p>
+          </div>
+          <div class="theory-card">
+            <div class="icon">♻️</div>
+            <h4>Segunda Ley</h4>
+            <p>Límite de convertir calor en trabajo — entropía</p>
+          </div>
+          <div class="theory-card">
+            <div class="icon">0️⃣</div>
+            <h4>Tercera Ley</h4>
+            <p>Define el cero absoluto de entropía</p>
+          </div>
+        </div>
+
+        <div class="section-divider">Tipos de sistema</div>
+        <div class="compare-grid">
+          <div class="compare-card c-aislado">
+            <div class="c-icon">🧊</div>
+            <h4 style="color:var(--accent)">Aislado</h4>
+            <p>No intercambia masa ni energía</p>
+          </div>
+          <div class="compare-card c-cerrado">
+            <div class="c-icon">🍲</div>
+            <h4 style="color:var(--accent3)">Cerrado</h4>
+            <p>Solo intercambia energía (calor/trabajo)</p>
+          </div>
+          <div class="compare-card c-abierto">
+            <div class="c-icon">🚰</div>
+            <h4 style="color:var(--green)">Abierto</h4>
+            <p>Intercambia masa y energía</p>
+          </div>
+        </div>
+
+        <div class="section-divider">Tipos de pared/frontera</div>
+        <ul class="bullet-list">
+          <li><strong>Diatérmica</strong> — permite paso de energía | <strong>Adiabática</strong> — no lo permite</li>
+          <li><strong>Móvil</strong> — permite variar el volumen | <strong>Rígida</strong> — no lo permite</li>
+          <li><strong>Permeable</strong> — permite paso de materia | <strong>Impermeable</strong> — no lo permite</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- BLOQUE 2 -->
+    <div class="block">
+      <div class="block-time">15–30</div>
+      <div class="block-content">
+        <div class="block-header">
+          <h3>Temperatura, Ley Cero y Escalas</h3>
+          <span class="block-badge badge-teoria">Teoría</span>
+        </div>
+
+        <div class="section-divider">Temperatura y equilibrio térmico</div>
+        <ul class="bullet-list">
+          <li>La temperatura se asocia a la <strong>energía cinética promedio</strong> de las partículas del objeto.</li>
+          <li>Dos objetos en <strong>equilibrio térmico</strong> no intercambian energía al ponerse en contacto — tienen la misma temperatura.</li>
+          <li>La temperatura <strong>no depende de la cantidad de materia</strong>.</li>
+        </ul>
+
+        <div class="section-divider">Ley Cero de la Termodinámica</div>
+        <div class="formula-box">
+          <div class="label">Enunciado</div>
+          <div class="eq">Si A ≡ C  y  B ≡ C  →  A ≡ B</div>
+          <div class="vars"><span>≡</span> = en equilibrio térmico con C (termómetro)</div>
+        </div>
+        <div class="note"><strong>Implicación práctica:</strong> esto es lo que permite que los termómetros funcionen. El termómetro es el "objeto C".</div>
+
+        <div class="section-divider">Escalas de temperatura</div>
+        <table>
+          <thead>
+            <tr><th>Escala</th><th>Congelación agua</th><th>Ebullición agua</th><th>Cero absoluto</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Celsius (°C)</td><td>0 °C</td><td>100 °C</td><td>−273.15 °C</td></tr>
+            <tr><td>Fahrenheit (°F)</td><td>32 °F</td><td>212 °F</td><td>−459.67 °F</td></tr>
+            <tr class="highlight-row"><td>Kelvin (K) — SI</td><td>273 K</td><td>373 K</td><td>0 K</td></tr>
+          </tbody>
+        </table>
+
+        <div class="formula-box">
+          <div class="label">Conversiones</div>
+          <div class="eq">K = °C + 273.15</div>
+          <div class="eq" style="margin-top:6px">°F = (9/5) × °C + 32</div>
+          <div class="eq" style="margin-top:6px">°C = (°F − 32) / 1.8</div>
+        </div>
+
+        <div class="exercise">
+          <div class="ex-label">✏️ Ejercicio Rápido — Conversiones</div>
+          <p>Convierte las siguientes temperaturas:</p>
+          <ul class="bullet-list" style="margin-top:8px">
+            <li>100 °C → K</li>
+            <li>273 K → °C</li>
+            <li>0 °C → °F</li>
+            <li>212 °F → °C</li>
+          </ul>
+          <div class="hint">
+            <details>
+              <summary>Ver soluciones</summary>
+              <div class="answer">
+                1) K = 100 + 273 = <strong>373 K</strong><br>
+                2) °C = 273 − 273 = <strong>0 °C</strong><br>
+                3) °F = 1.8 × 0 + 32 = <strong>32 °F</strong><br>
+                4) °C = (212 − 32) / 1.8 = 180/1.8 = <strong>100 °C</strong>
+              </div>
+            </details>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BLOQUE 3 -->
+    <div class="block">
+      <div class="block-time">30–50</div>
+      <div class="block-content">
+        <div class="block-header">
+          <h3>Dilatación Térmica</h3>
+          <span class="block-badge badge-ejercicio">Teoría + Práctica</span>
+        </div>
+
+        <div class="section-divider">¿Por qué ocurre?</div>
+        <p style="font-size:0.88rem; color:var(--muted); margin-bottom:14px;">
+          Al aumentar temperatura, los átomos vibran más intensamente → la <strong style="color:var(--text)">separación promedio entre ellos aumenta</strong> → el objeto se expande. Casi todos los materiales se comportan así.
+        </p>
+        <div class="note"><strong>Ejemplo real:</strong> los rieles de tren tienen juntas de dilatación para evitar que se doblen en verano. Los puentes también.</div>
+
+        <div class="section-divider">Fórmulas</div>
+
+        <div class="formula-box">
+          <div class="label">Dilatación lineal</div>
+          <div class="eq">ΔL = α · L₀ · ΔT</div>
+          <div class="eq" style="margin-top:4px">L_f = L₀ [1 + α(T_f − T₀)]</div>
+          <div class="vars">
+            <span>α</span> = coef. dilatación lineal (°C⁻¹) · <span>L₀</span> = longitud inicial · <span>ΔT</span> = variación de temperatura
+          </div>
+        </div>
+
+        <div class="formula-box">
+          <div class="label">Dilatación superficial y volumétrica</div>
+          <div class="eq">ΔA = 2α · A₀ · ΔT</div>
+          <div class="eq" style="margin-top:4px">ΔV = β · V₀ · ΔT &nbsp; (β ≈ 3α para sólidos)</div>
+        </div>
+
+        <div class="section-divider">Coeficientes comunes</div>
+        <table>
+          <thead>
+            <tr><th>Material</th><th>α (°C⁻¹)</th><th>β (°C⁻¹)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Aluminio</td><td>24 × 10⁻⁶</td><td>72 × 10⁻⁶</td></tr>
+            <tr><td>Cobre</td><td>17 × 10⁻⁶</td><td>51 × 10⁻⁶</td></tr>
+            <tr><td>Acero</td><td>11 × 10⁻⁶</td><td>33 × 10⁻⁶</td></tr>
+            <tr><td>Vidrio Pyrex</td><td>3.2 × 10⁻⁶</td><td>9.6 × 10⁻⁶</td></tr>
+            <tr class="highlight-row"><td>Hierro</td><td>11.7 × 10⁻⁶</td><td>35 × 10⁻⁶</td></tr>
+          </tbody>
+        </table>
+
+        <!-- Ejercicio 1 -->
+        <div class="exercise">
+          <div class="ex-label">✏️ Ejercicio 1 — Dilatación lineal</div>
+          <p>Una varilla de <strong>hierro</strong> tiene 5 m a 15 °C. ¿Cuál es su longitud a 25 °C?<br>(α_Fe = 11.7 × 10⁻⁶ °C⁻¹)</p>
+          <div class="hint">
+            <details>
+              <summary>Ver solución</summary>
+              <div class="answer">
+                ΔT = 25 − 15 = 10 °C<br>
+                ΔL = 11.7×10⁻⁶ × 5 × 10 = 5.85×10⁻⁴ m<br>
+                L_f = 5 + 0.000585 = <strong>5.000585 m</strong>
+              </div>
+            </details>
+          </div>
+        </div>
+
+        <!-- Ejercicio 2 -->
+        <div class="exercise">
+          <div class="ex-label">✏️ Ejercicio 2 — Rieles de tren</div>
+          <p>Una línea de tren se construye a 0 °C con segmentos de <strong>acero de 12 m</strong>. ¿Qué separación debe haber entre segmentos para que no se toquen a 42 °C?<br>(α = 11 × 10⁻⁶ °C⁻¹)</p>
+          <div class="hint">
+            <details>
+              <summary>Ver solución</summary>
+              <div class="answer">
+                ΔT = 42 − 0 = 42 °C<br>
+                ΔL = 11×10⁻⁶ × 12 × 42<br>
+                ΔL = 11×10⁻⁶ × 504<br>
+                ΔL = <strong>5.544 × 10⁻³ m ≈ 5.5 mm</strong><br><br>
+                La separación mínima debe ser de 5.5 mm por cada junta.
+              </div>
+            </details>
+          </div>
+        </div>
+
+        <!-- Ejercicio 3 -->
+        <div class="exercise">
+          <div class="ex-label">✏️ Ejercicio 3 — Dilatación volumétrica (desafío)</div>
+          <p>Un recipiente de <strong>Pyrex de 100 cm³</strong> está lleno de mercurio a 10 °C. Se calienta a 40 °C. ¿Cuánto mercurio se derrama?<br>α(Pyrex) = 3.2×10⁻⁶ °C⁻¹ &nbsp;|&nbsp; β(Hg) = 0.18×10⁻³ °C⁻¹</p>
+          <div class="hint">
+            <details>
+              <summary>Ver solución</summary>
+              <div class="answer">
+                ΔT = 40 − 10 = 30 °C<br><br>
+                Vidrio (β = 3α = 9.6×10⁻⁶):<br>
+                ΔV_vidrio = 100 × 9.6×10⁻⁶ × 30 = 0.0288 cm³<br><br>
+                Mercurio:<br>
+                ΔV_Hg = 100 × 0.18×10⁻³ × 30 = 0.54 cm³<br><br>
+                Derrame = 0.54 − 0.029 = <strong>≈ 0.51 cm³</strong>
+              </div>
+            </details>
+          </div>
+        </div>
+
+        <!-- DATO CURIOSO -->
+        <div class="note" style="margin-top:16px">
+          <strong>⚠️ Caso anómalo — Agua:</strong> entre 0 °C y 4 °C el agua se <em>contrae</em> al calentarse (densidad máxima a 4 °C). Por eso los lagos no se congelan completamente en invierno: el agua más fría (y menos densa) flota.
+        </div>
+      </div>
+    </div>
+
+    <!-- BLOQUE 4 -->
+    <div class="block">
+      <div class="block-time">50–60</div>
+      <div class="block-content">
+        <div class="block-header">
+          <h3>Cierre y Resumen</h3>
+          <span class="block-badge badge-cierre">Cierre</span>
+        </div>
+
+        <div class="summary-box">
+          <h3>Fórmulas clave de la clase</h3>
+          <div class="formula-row">
+            <div class="f-chip">K = °C + 273.15</div>
+            <div class="f-chip">°F = 9/5 · °C + 32</div>
+            <div class="f-chip">ΔL = α·L₀·ΔT</div>
+            <div class="f-chip">ΔA = 2α·A₀·ΔT</div>
+            <div class="f-chip">ΔV = β·V₀·ΔT</div>
+            <div class="f-chip">β ≈ 3α (sólidos)</div>
+          </div>
+        </div>
+
+        <div class="section-divider">Pregunta de diagnóstico</div>
+        <div class="exercise">
+          <div class="ex-label">🤔 Reflexión final</div>
+          <p>En el ejemplo del recipiente de Pyrex con mercurio: ¿por qué el mercurio se derrama aunque el recipiente también se dilata? ¿Qué propiedad del mercurio explica esto?</p>
+          <div class="hint">
+            <details>
+              <summary>Ver respuesta esperada</summary>
+              <div class="answer">
+                El coeficiente de dilatación volumétrica del mercurio (β = 0.18×10⁻³) es mucho mayor que el del vidrio Pyrex (β = 9.6×10⁻⁶). Aunque ambos se dilatan, el mercurio lo hace ~18 veces más, por lo que el volumen extra de mercurio no cabe en el recipiente expandido.
+              </div>
+            </details>
+          </div>
+        </div>
+
+        <div class="section-divider">Próxima clase — Tema 2</div>
+        <ul class="bullet-list">
+          <li><strong>Calor y trabajo</strong> — Primera Ley de la Termodinámica</li>
+          <li><strong>Procesos termodinámicos</strong>: isotérmico, adiabático, isocórico, isobárico</li>
+          <li><strong>Gas ideal</strong> — ecuación de estado PV = nRT</li>
+        </ul>
+      </div>
+    </div>
+
+  </div><!-- /timeline -->
+
+  <!-- RESOURCES -->
+  <div class="resources-section">
+    <h2>Recursos online <span>recomendados</span></h2>
+    <p class="sub">Laboratorios virtuales y simulaciones para explorar los conceptos de esta clase</p>
+
+    <div class="resources-grid">
+
+      <a class="resource-card" href="https://phet.colorado.edu/sims/html/states-of-matter/latest/states-of-matter_es.html" target="_blank">
+        <div class="r-top">
+          <div class="r-icon">⚛️</div>
+          <span class="r-tag tag-sim">Simulación</span>
+        </div>
+        <h4>Estados de la Materia — PhET</h4>
+        <p>Visualiza cómo el calor mueve las moléculas. Cambia temperatura y ve las transiciones sólido → líquido → gas en tiempo real.</p>
+        <div class="r-link">phet.colorado.edu — HTML5 · Español</div>
+      </a>
+
+      <a class="resource-card" href="https://phet.colorado.edu/sims/html/states-of-matter-basics/latest/states-of-matter-basics_es.html" target="_blank">
+        <div class="r-top">
+          <div class="r-icon">🧪</div>
+          <span class="r-tag tag-sim">Simulación</span>
+        </div>
+        <h4>Estados de la Materia: Intro — PhET</h4>
+        <p>Versión simplificada. Ideal para ver la relación entre temperatura y energía cinética molecular. Perfecto para la Ley Cero.</p>
+        <div class="r-link">phet.colorado.edu — HTML5 · Español</div>
+      </a>
+
+      <a class="resource-card" href="https://phet.colorado.edu/es/simulations/category/physics/heat-and-thermodynamics" target="_blank">
+        <div class="r-top">
+          <div class="r-icon">🔥</div>
+          <span class="r-tag tag-lab">Laboratorio</span>
+        </div>
+        <h4>Catálogo Calor y Termodinámica — PhET</h4>
+        <p>Todas las simulaciones de PhET sobre calor: transferencia de energía, propiedades de gases, temperatura y más.</p>
+        <div class="r-link">phet.colorado.edu/es — Todas las sims</div>
+      </a>
+
+      <a class="resource-card" href="https://phet.colorado.edu/sims/html/gas-properties/latest/gas-properties_es.html" target="_blank">
+        <div class="r-top">
+          <div class="r-icon">💨</div>
+          <span class="r-tag tag-sim">Simulación</span>
+        </div>
+        <h4>Propiedades del Gas — PhET</h4>
+        <p>Bombea moléculas a un recipiente. Cambia volumen, temperatura y presión. Observa cómo se relacionan P, V y T.</p>
+        <div class="r-link">phet.colorado.edu — HTML5 · Español</div>
+      </a>
+
+      <a class="resource-card" href="https://stemonline.tech/en/chemistry/heat/" target="_blank">
+        <div class="r-top">
+          <div class="r-icon">🌡️</div>
+          <span class="r-tag tag-lab">Laboratorio</span>
+        </div>
+        <h4>Simulaciones de Calor — STEM Online</h4>
+        <p>Simulaciones interactivas sobre termómetros, transferencia de calor y energía. Interfaz limpia, directo al grano.</p>
+        <div class="r-link">stemonline.tech — HTML5 · Gratis</div>
+      </a>
+
+      <a class="resource-card" href="https://sites.google.com/site/smmfisicayquimica/fisica-y-quimica/energia-termica-y-calor" target="_blank">
+        <div class="r-top">
+          <div class="r-icon">📚</div>
+          <span class="r-tag tag-video">Videos</span>
+        </div>
+        <h4>FisQuiMat — Energía Térmica y Calor</h4>
+        <p>Compilado de videos y simulaciones en español: escala Kelvin, energía cinética, conducción/convección/radiación y más.</p>
+        <div class="r-link">sites.google.com/smmfisicayquimica</div>
+      </a>
+
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+</body>
+</html>
