@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Física — Termodinámica</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080b10;
+    --surface: #0f1318;
+    --surface2: #161c24;
+    --border: #1f2733;
+    --accent: #3d9eff;
+    --accent2: #ff6b35;
+    --text: #dde3ec;
+    --muted: #6b7a8d;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'IBM Plex Sans', sans-serif; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 24px; }
+
+  .hero { text-align: center; margin-bottom: 48px; }
+  .tag { display: inline-block; border: 1px solid rgba(61,158,255,0.4); background: rgba(61,158,255,0.08); color: var(--accent); font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; padding: 5px 16px; border-radius: 20px; margin-bottom: 20px; }
+  h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3.2rem); background: linear-gradient(135deg, #fff 30%, var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 12px; }
+  .sub { color: var(--muted); font-size: 0.9rem; }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; max-width: 680px; width: 100%; }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 28px; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 12px; transition: border-color 0.2s, transform 0.15s; }
+  .card:hover { transform: translateY(-3px); }
+  .card1:hover { border-color: rgba(61,158,255,0.45); }
+  .card2:hover { border-color: rgba(255,107,53,0.45); }
+
+  .card .num { font-size: 2.5rem; }
+  .card .clase { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; }
+  .c1 { color: var(--accent); }
+  .c2 { color: var(--accent2); }
+  .card h2 { font-family: 'Playfair Display', serif; font-size: 1.25rem; }
+  .card p { font-size: 0.83rem; color: var(--muted); line-height: 1.55; flex: 1; }
+  .card .topics { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .topic { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 3px 9px; font-size: 11px; color: var(--muted); }
+  .card .arrow { font-size: 1.1rem; align-self: flex-end; opacity: 0.4; transition: opacity 0.2s, transform 0.2s; }
+  .card:hover .arrow { opacity: 1; transform: translateX(4px); }
+
+  .footer { margin-top: 40px; color: var(--muted); font-size: 0.8rem; text-align: center; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="tag">Universidad · Primer Año</div>
+  <h1>Termodinámica</h1>
+  <p class="sub">Prof. Macarena Domínguez — Selecciona una clase</p>
+</div>
+
+<div class="grid">
+  <a class="card card1" href="clase_termodinamica_parte1.html">
+    <div class="num">🌡️</div>
+    <div class="clase c1">Clase 1</div>
+    <h2>Fundamentos</h2>
+    <p>Sistemas termodinámicos, temperatura, Ley Cero y dilatación térmica.</p>
+    <div class="topics">
+      <span class="topic">Sistemas</span>
+      <span class="topic">Ley Cero</span>
+      <span class="topic">Escalas T°</span>
+      <span class="topic">Dilatación</span>
+    </div>
+    <div class="arrow">→</div>
+  </a>
+
+  <a class="card card2" href="clase_termodinamica_parte2.html">
+    <div class="num">🔥</div>
+    <div class="clase c2">Clase 2</div>
+    <h2>Calor, Gas Ideal y Primera Ley</h2>
+    <p>Transferencia de calor, calor específico, gas ideal y Primera Ley de la Termodinámica.</p>
+    <div class="topics">
+      <span class="topic">Conducción</span>
+      <span class="topic">Q específico</span>
+      <span class="topic">PV=nRT</span>
+      <span class="topic">1ª Ley</span>
+    </div>
+    <div class="arrow">→</div>
+  </a>
+</div>
+
+<div class="footer">Física · Termodinámica · parredondoc.github.io</div>
+
+</body>
+</html>
