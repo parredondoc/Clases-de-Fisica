@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Termodinámica — Clase 3</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07080c;
+    --surface: #0d0f15;
+    --surface2: #13161e;
+    --border: #1c2030;
+    --accent: #a78bfa;
+    --accent2: #34d399;
+    --accent3: #fb923c;
+    --accent4: #f472b6;
+    --text: #e2e4ed;
+    --muted: #64748b;
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.7; }
+
+  /* HERO */
+  .hero {
+    padding: 72px 40px 52px; text-align: center; position: relative; overflow: hidden;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 55% at 50% 0%, rgba(167,139,250,0.13) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .hero-tag {
+    display: inline-block; border: 1px solid rgba(167,139,250,0.4);
+    background: rgba(167,139,250,0.08); color: var(--accent);
+    font-size: 11px; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase;
+    padding: 5px 16px; border-radius: 20px; margin-bottom: 22px;
+  }
+  h1 {
+    font-family: 'Cormorant Garamond', serif; font-size: clamp(2.2rem, 5vw, 3.8rem);
+    line-height: 1.12; margin-bottom: 14px;
+    background: linear-gradient(135deg, #fff 25%, var(--accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .hero p { color: var(--muted); font-size: 0.92rem; max-width: 520px; margin: 0 auto 28px; }
+  .pills { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .pill { background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 5px 14px; font-size: 12px; color: var(--muted); }
+  .pill span { color: var(--text); font-weight: 500; }
+
+  /* CONTAINER */
+  .container { max-width: 920px; margin: 0 auto; padding: 0 24px; }
+
+  /* SECTION */
+  .sec-head { padding: 52px 0 26px; }
+  .sec-head h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; margin-bottom: 5px; }
+  .sec-head h2 span { color: var(--accent); }
+  .sec-head p { color: var(--muted); font-size: 0.87rem; }
+
+  /* BLOCK */
+  .block { display: flex; gap: 20px; margin-bottom: 34px; position: relative; }
+  .block::before { content: ''; position: absolute; left: 21px; top: 48px; bottom: -34px; width: 1px; background: var(--border); }
+  .block:last-of-type::before { display: none; }
+  .bnum {
+    flex-shrink: 0; width: 42px; height: 42px; background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--accent); font-weight: 500;
+  }
+  .bbody {
+    flex: 1; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 22px; transition: border-color 0.2s;
+  }
+  .bbody:hover { border-color: rgba(167,139,250,0.28); }
+  .bhead { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 16px; }
+  .bhead h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; }
+  .badge { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 3px 9px; border-radius: 6px; flex-shrink: 0; }
+  .b1 { background: rgba(167,139,250,0.1); color: var(--accent); border: 1px solid rgba(167,139,250,0.25); }
+  .b2 { background: rgba(52,211,153,0.1); color: var(--accent2); border: 1px solid rgba(52,211,153,0.25); }
+  .b3 { background: rgba(251,146,60,0.1); color: var(--accent3); border: 1px solid rgba(251,146,60,0.25); }
+  .b4 { background: rgba(244,114,182,0.1); color: var(--accent4); border: 1px solid rgba(244,114,182,0.25); }
+
+  /* DIV */
+  .div { font-size: 0.72rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin: 18px 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+
+  /* BULLETS */
+  .bl { list-style: none; margin: 10px 0; }
+  .bl li { display: flex; gap: 10px; margin-bottom: 7px; font-size: 0.87rem; color: var(--muted); align-items: flex-start; }
+  .bl li::before { content: '→'; color: var(--accent); flex-shrink: 0; margin-top: 2px; }
+  .bl li strong { color: var(--text); }
+
+  /* FORMULA */
+  .fbox {
+    background: var(--bg); border: 1px solid var(--border); border-left: 3px solid var(--accent);
+    border-radius: 8px; padding: 14px 18px; margin: 12px 0;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.88rem; color: var(--accent);
+  }
+  .fbox .fl { font-family: 'Inter', sans-serif; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); margin-bottom: 7px; }
+  .fbox .fe { font-size: 1rem; margin-bottom: 4px; }
+  .fbox .fv { font-family: 'Inter', sans-serif; font-size: 0.78rem; color: var(--muted); margin-top: 8px; line-height: 1.6; }
+  .fbox .fv span { color: var(--text); }
+  .f2 { border-left-color: var(--accent2); color: var(--accent2); }
+  .f3 { border-left-color: var(--accent3); color: var(--accent3); }
+  .f4 { border-left-color: var(--accent4); color: var(--accent4); }
+
+  /* CARNOT DIAGRAM */
+  .carnot-diagram {
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 12px;
+    padding: 24px; margin: 16px 0; display: flex; flex-direction: column; align-items: center; gap: 0;
+  }
+  .dep {
+    width: 200px; padding: 14px; border-radius: 10px; text-align: center;
+    font-size: 0.85rem; font-weight: 600;
+  }
+  .dep-hot { background: rgba(251,146,60,0.15); border: 1px solid rgba(251,146,60,0.4); color: var(--accent3); }
+  .dep-cold { background: rgba(167,139,250,0.1); border: 1px solid rgba(167,139,250,0.3); color: var(--accent); }
+  .dep .dtemp { font-size: 0.75rem; font-weight: 400; color: var(--muted); margin-top: 3px; }
+  .arrow-col { display: flex; align-items: center; gap: 20px; margin: 8px 0; }
+  .arrow-line { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .arrow-line .alabel { font-size: 0.75rem; font-family: 'JetBrains Mono', monospace; color: var(--accent3); }
+  .arrow-line .alabel2 { color: var(--accent); }
+  .arrow-line .aline { width: 2px; height: 32px; background: var(--muted); opacity: 0.4; }
+  .arrow-line .atip { font-size: 0.9rem; color: var(--muted); }
+  .machine {
+    width: 140px; height: 60px; background: var(--surface); border: 2px solid var(--border);
+    border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-size: 0.8rem; font-weight: 600; color: var(--text); gap: 2px;
+  }
+  .machine .msub { font-size: 0.7rem; color: var(--accent2); font-family: 'JetBrains Mono', monospace; }
+  .work-arrow { display: flex; align-items: center; gap: 8px; font-size: 0.78rem; color: var(--accent2); font-family: 'JetBrains Mono', monospace; }
+  .work-arrow .wline { width: 40px; height: 2px; background: var(--accent2); opacity: 0.5; }
+
+  /* CARDS */
+  .cgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; margin: 12px 0; }
+  .ccard { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+  .ccard .cci { font-size: 1.3rem; margin-bottom: 6px; }
+  .ccard h4 { font-size: 0.82rem; font-weight: 600; margin-bottom: 5px; }
+  .ccard p { font-size: 0.79rem; color: var(--muted); line-height: 1.45; }
+
+  /* NOTE */
+  .note { background: rgba(167,139,250,0.05); border: 1px solid rgba(167,139,250,0.18); border-radius: 8px; padding: 12px 16px; font-size: 0.84rem; color: var(--muted); margin: 10px 0; }
+  .note strong { color: var(--accent); }
+
+  /* WARNING */
+  .warn { background: rgba(251,146,60,0.06); border: 1px solid rgba(251,146,60,0.2); border-radius: 8px; padding: 12px 16px; font-size: 0.84rem; color: var(--muted); margin: 10px 0; }
+  .warn strong { color: var(--accent3); }
+
+  /* EXERCISE */
+  .ex { background: rgba(52,211,153,0.04); border: 1px solid rgba(52,211,153,0.18); border-radius: 10px; padding: 16px; margin: 12px 0; }
+  .exl { font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent2); margin-bottom: 10px; }
+  .ex p { font-size: 0.88rem; color: var(--text); margin-bottom: 6px; }
+  details summary { cursor: pointer; font-size: 0.82rem; color: var(--accent); font-weight: 500; user-select: none; list-style: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(52,211,153,0.15); }
+  details summary::before { content: '▶ '; font-size: 0.7rem; }
+  details[open] summary::before { content: '▼ '; }
+  details .ans { margin-top: 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: #fbbf24; background: var(--bg); border-radius: 6px; padding: 12px; line-height: 1.9; }
+
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.83rem; }
+  thead tr { background: var(--surface2); }
+  th { text-align: left; padding: 9px 13px; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.8px; color: var(--muted); border-bottom: 1px solid var(--border); }
+  td { padding: 9px 13px; border-bottom: 1px solid rgba(28,32,48,0.7); }
+  tr:last-child td { border-bottom: none; }
+  .hl td { color: var(--accent2); }
+
+  /* SUMMARY */
+  .summary { background: linear-gradient(135deg, rgba(167,139,250,0.07), rgba(52,211,153,0.05)); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; margin-bottom: 14px; }
+  .summary h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--accent); margin-bottom: 14px; }
+  .frow { display: flex; flex-wrap: wrap; gap: 8px; }
+  .fchip { background: var(--bg); border: 1px solid var(--border); border-radius: 7px; padding: 7px 12px; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #fbbf24; }
+
+  /* RESOURCES */
+  .res-sec { padding: 40px 0 80px; border-top: 1px solid var(--border); margin-top: 10px; }
+  .res-sec h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; margin-bottom: 6px; }
+  .res-sec h2 span { color: var(--accent3); }
+  .res-sec .sub { color: var(--muted); font-size: 0.88rem; margin-bottom: 26px; }
+  .rgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(255px, 1fr)); gap: 14px; }
+  .rcard { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 9px; transition: border-color 0.2s, transform 0.15s; }
+  .rcard:hover { border-color: rgba(167,139,250,0.4); transform: translateY(-2px); }
+  .rtop { display: flex; justify-content: space-between; align-items: center; }
+  .ricon { font-size: 1.7rem; }
+  .rtag { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 3px 8px; border-radius: 5px; }
+  .t-sim { background: rgba(52,211,153,0.1); color: var(--accent2); }
+  .t-video { background: rgba(251,146,60,0.1); color: var(--accent3); }
+  .t-lab { background: rgba(167,139,250,0.1); color: var(--accent); }
+  .rcard h4 { font-size: 0.92rem; font-weight: 600; }
+  .rcard p { font-size: 0.8rem; color: var(--muted); flex: 1; }
+  .rcard .rlink { font-size: 0.75rem; color: var(--accent); font-family: 'JetBrains Mono', monospace; word-break: break-all; }
+
+  @media (max-width: 600px) {
+    .hero { padding: 50px 20px 36px; }
+    .block { flex-direction: column; }
+    .block::before { display: none; }
+    .carnot-diagram { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-tag">Clase 3 · Universidad · Primer Año</div>
+  <h1>Termodinámica<br><em>Segunda Ley y Carnot</em></h1>
+  <p>Segunda Ley, máquinas térmicas, procesos reversibles e irreversibles, y ciclo de Carnot.</p>
+  <div class="pills">
+    <div class="pill">⏱ <span>60 minutos</span></div>
+    <div class="pill">⚙️ <span>4 Bloques</span></div>
+    <div class="pill">✏️ <span>Ejercicios resueltos</span></div>
+    <div class="pill">🔬 <span>Labs online</span></div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="sec-head">
+    <h2>Plan de clase — <span>4 bloques</span></h2>
+    <p>Basado en el material del Tema 2 — Prof. Macarena Domínguez</p>
+  </div>
+
+  <!-- BLOQUE 1 -->
+  <div class="block">
+    <div class="bnum">0–15</div>
+    <div class="bbody">
+      <div class="bhead">
+        <h3>Segunda Ley de la Termodinámica</h3>
+        <span class="badge b1">Teoría</span>
+      </div>
+
+      <div class="div">Enunciado</div>
+      <div class="fbox">
+        <div class="fl">Segunda Ley — Enunciado simple</div>
+        <div class="fe">"El calor fluye espontáneamente de un cuerpo caliente a uno frío, nunca al revés."</div>
+      </div>
+
+      <ul class="bl">
+        <li><strong>Fuente (source):</strong> depósito que suministra energía en forma de calor (T alta).</li>
+        <li><strong>Sumidero (sink):</strong> depósito que absorbe energía en forma de calor (T baja).</li>
+        <li>La Segunda Ley establece la <strong>dirección natural</strong> de los procesos termodinámicos.</li>
+      </ul>
+
+      <div class="div">Dos enunciados equivalentes</div>
+      <div class="cgrid">
+        <div class="ccard">
+          <div class="cci">🔄</div>
+          <h4 style="color:var(--accent)">Kelvin–Planck</h4>
+          <p>Es imposible construir una máquina que opere en ciclo y convierta <strong>todo</strong> el calor en trabajo (eficiencia 100% imposible).</p>
+        </div>
+        <div class="ccard">
+          <div class="cci">❄️</div>
+          <h4 style="color:var(--accent3)">Clausius</h4>
+          <p>Es imposible construir un dispositivo que transfiera calor espontáneamente de un cuerpo frío a uno caliente sin trabajo externo.</p>
+        </div>
+      </div>
+
+      <div class="warn"><strong>Máquina de movimiento perpetuo:</strong> cualquier dispositivo que viole la Segunda Ley. Nunca se ha construido uno que funcione.</div>
+
+      <div class="div">Relación con la Primera Ley</div>
+      <div class="note"><strong>Primera Ley:</strong> dice cuánta energía se conserva. <strong>Segunda Ley:</strong> dice en qué dirección ocurre el proceso. Ambas son necesarias para describir completamente un sistema termodinámico.</div>
+    </div>
+  </div>
+
+  <!-- BLOQUE 2 -->
+  <div class="block">
+    <div class="bnum">15–30</div>
+    <div class="bbody">
+      <div class="bhead">
+        <h3>Máquinas Térmicas</h3>
+        <span class="badge b2">Teoría + Ejercicios</span>
+      </div>
+
+      <div class="div">¿Qué es una máquina térmica?</div>
+      <p style="font-size:0.87rem; color:var(--muted); margin-bottom:14px;">Dispositivo que <strong style="color:var(--text)">toma calor de una fuente caliente</strong>, convierte parte en trabajo y <strong style="color:var(--text)">expulsa el resto a un sumidero frío</strong>. Opera en ciclo.</p>
+
+      <!-- Diagrama Carnot -->
+      <div class="carnot-diagram">
+        <div class="dep dep-hot">Fuente caliente<div class="dtemp">T_H (alta temperatura)</div></div>
+        <div class="arrow-col">
+          <div class="arrow-line">
+            <div class="alabel">Q_H ↓</div>
+            <div class="aline"></div>
+            <div class="atip">↓</div>
+          </div>
+          <div class="machine">⚙️ Máquina<div class="msub">W = Q_H − Q_C</div></div>
+          <div class="arrow-line">
+            <div class="atip">↓</div>
+            <div class="aline"></div>
+            <div class="alabel alabel2">Q_C ↓</div>
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; gap:16px; margin-top:-4px">
+          <div class="dep dep-cold">Sumidero frío<div class="dtemp">T_C (baja temperatura)</div></div>
+          <div class="work-arrow"><div class="wline"></div>→ W (trabajo útil)</div>
+        </div>
+      </div>
+
+      <div class="div">Fórmulas de la máquina térmica</div>
+      <div class="fbox f3">
+        <div class="fl">Trabajo neto</div>
+        <div class="fe">W_neto = Q_H − Q_C</div>
+        <div class="fv"><span>Q_H</span> = calor absorbido de la fuente · <span>Q_C</span> = calor expulsado al sumidero</div>
+      </div>
+
+      <div class="fbox f2">
+        <div class="fl">Eficiencia térmica</div>
+        <div class="fe">e = W_neto / Q_H = 1 − (Q_C / Q_H)</div>
+        <div class="fv">e = 1 solo si Q_C = 0 → imposible por la Segunda Ley · e siempre entre 0 y 1</div>
+      </div>
+
+      <div class="div">Eficiencia en porcentaje</div>
+      <div class="fbox">
+        <div class="fl">Eficiencia %</div>
+        <div class="fe">e% = (1 − Q_C/Q_H) × 100%</div>
+      </div>
+
+      <div class="ex">
+        <div class="exl">✏️ Ejercicio 1 — Eficiencia de máquina térmica</div>
+        <p>Una máquina térmica absorbe 800 J de una fuente caliente y expulsa 500 J al sumidero frío. ¿Cuál es su eficiencia?</p>
+        <details>
+          <summary>Ver solución</summary>
+          <div class="ans">
+            W_neto = Q_H − Q_C = 800 − 500 = 300 J<br><br>
+            e = W_neto / Q_H = 300 / 800<br>
+            e = 0.375<br>
+            e% = <strong>37.5%</strong><br><br>
+            La máquina convierte solo el 37.5% del calor absorbido en trabajo útil.
+          </div>
+        </details>
+      </div>
+
+      <div class="ex">
+        <div class="exl">✏️ Ejercicio 2 — Calor expulsado</div>
+        <p>Una máquina tiene eficiencia del 30% y absorbe 1200 J por ciclo. ¿Cuánto calor expulsa al sumidero?</p>
+        <details>
+          <summary>Ver solución</summary>
+          <div class="ans">
+            e = 0.30 → W = e × Q_H = 0.30 × 1200 = 360 J<br><br>
+            Q_C = Q_H − W = 1200 − 360<br>
+            Q_C = <strong>840 J</strong><br><br>
+            El 70% restante se desperdicia como calor al sumidero frío.
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOQUE 3 -->
+  <div class="block">
+    <div class="bnum">30–50</div>
+    <div class="bbody">
+      <div class="bhead">
+        <h3>Procesos Reversibles y Máquina de Carnot</h3>
+        <span class="badge b3">Teoría + Ejercicios</span>
+      </div>
+
+      <div class="div">Procesos reversibles e irreversibles</div>
+      <div class="cgrid">
+        <div class="ccard">
+          <div class="cci">↩️</div>
+          <h4 style="color:var(--accent2)">Reversible</h4>
+          <p>El sistema puede regresar a su estado inicial por la misma trayectoria. Ocurre muy lentamente, sin disipación (sin fricción ni turbulencia).</p>
+        </div>
+        <div class="ccard">
+          <div class="cci">➡️</div>
+          <h4 style="color:var(--accent4)">Irreversible</h4>
+          <p>No se puede revertir exactamente. Todos los procesos reales son irreversibles en algún grado (fricción, calor espontáneo, etc.).</p>
+        </div>
+      </div>
+      <div class="note"><strong>Idea clave:</strong> un proceso muy lento donde el sistema está siempre cerca del equilibrio se puede aproximar como reversible.</div>
+
+      <div class="div">Máquina de Carnot</div>
+      <ul class="bl">
+        <li>Máquina térmica <strong>teórica ideal</strong> que opera entre dos temperaturas con la máxima eficiencia posible.</li>
+        <li>Opera con <strong>procesos completamente reversibles</strong>: dos isotérmicos y dos adiabáticos.</li>
+        <li>Ninguna máquina real puede superar la eficiencia de Carnot.</li>
+        <li>Todas las máquinas de Carnot entre las <strong>mismas dos temperaturas tienen la misma eficiencia</strong>.</li>
+      </ul>
+
+      <div class="div">Eficiencia de Carnot</div>
+      <div class="fbox f4">
+        <div class="fl">Eficiencia máxima — Carnot</div>
+        <div class="fe">e_Carnot = 1 − (T_C / T_H)</div>
+        <div class="fv">
+          <span>T_C</span> = temperatura del sumidero frío [K] · <span>T_H</span> = temperatura de la fuente caliente [K]<br>
+          ⚠️ Las temperaturas SIEMPRE deben estar en Kelvin
+        </div>
+      </div>
+
+      <div class="warn"><strong>Importante:</strong> e_Carnot es el límite teórico máximo. Las máquinas reales siempre tienen e &lt; e_Carnot por irreversibilidades (fricción, conducción de calor no ideal, etc.).</div>
+
+      <div class="div">Ciclo de Carnot — 4 pasos</div>
+      <table>
+        <thead><tr><th>Paso</th><th>Proceso</th><th>Descripción</th><th>Q / W</th></tr></thead>
+        <tbody>
+          <tr><td>1 → 2</td><td>Isotérmico (T_H)</td><td>Expansión absorbiendo calor Q_H de la fuente</td><td>Q = Q_H &gt; 0</td></tr>
+          <tr><td>2 → 3</td><td>Adiabático</td><td>Expansión sin intercambio de calor, T baja de T_H a T_C</td><td>Q = 0</td></tr>
+          <tr><td>3 → 4</td><td>Isotérmico (T_C)</td><td>Compresión expulsando calor Q_C al sumidero</td><td>Q = −Q_C &lt; 0</td></tr>
+          <tr class="hl"><td>4 → 1</td><td>Adiabático</td><td>Compresión sin intercambio de calor, T sube de T_C a T_H</td><td>Q = 0</td></tr>
+        </tbody>
+      </table>
+
+      <div class="ex">
+        <div class="exl">✏️ Ejercicio 3 — Eficiencia de Carnot</div>
+        <p>Una máquina de Carnot opera entre una fuente a 500 °C y un sumidero a 25 °C. ¿Cuál es su eficiencia máxima?</p>
+        <details>
+          <summary>Ver solución</summary>
+          <div class="ans">
+            T_H = 500 + 273 = 773 K<br>
+            T_C = 25 + 273 = 298 K<br><br>
+            e_Carnot = 1 − (T_C / T_H)<br>
+            e_Carnot = 1 − (298 / 773)<br>
+            e_Carnot = 1 − 0.3855<br>
+            e_Carnot = 0.6145<br>
+            e_Carnot = <strong>61.4%</strong><br><br>
+            Ninguna máquina real entre estas temperaturas puede superar el 61.4% de eficiencia.
+          </div>
+        </details>
+      </div>
+
+      <div class="ex">
+        <div class="exl">✏️ Ejercicio 4 — Comparar máquinas (desafío)</div>
+        <p>Una máquina real opera entre T_H = 600 K y T_C = 300 K con eficiencia del 40%. ¿Es posible esto? ¿Cuánto se aleja de la eficiencia ideal?</p>
+        <details>
+          <summary>Ver solución</summary>
+          <div class="ans">
+            e_Carnot = 1 − (300/600) = 1 − 0.5 = 50%<br><br>
+            La máquina real tiene e = 40% &lt; e_Carnot = 50%<br>
+            → <strong>Sí es posible</strong>, no viola ninguna ley.<br><br>
+            Diferencia = 50% − 40% = <strong>10%</strong><br><br>
+            Las pérdidas por irreversibilidades (fricción, conducción no ideal) explican esa diferencia. Una máquina real típica opera entre 30–50% de la eficiencia de Carnot.
+          </div>
+        </details>
+      </div>
+
+      <div class="ex">
+        <div class="exl">✏️ Ejercicio 5 — Temperatura de sumidero (desafío)</div>
+        <p>Se quiere una máquina de Carnot con 70% de eficiencia operando con fuente a 800 K. ¿A qué temperatura debe estar el sumidero?</p>
+        <details>
+          <summary>Ver solución</summary>
+          <div class="ans">
+            e = 1 − T_C/T_H<br>
+            0.70 = 1 − T_C/800<br>
+            T_C/800 = 1 − 0.70 = 0.30<br>
+            T_C = 0.30 × 800<br>
+            T_C = <strong>240 K = −33 °C</strong><br><br>
+            El sumidero debe estar a −33 °C para lograr 70% de eficiencia con esa fuente.
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOQUE 4 -->
+  <div class="block">
+    <div class="bnum">50–60</div>
+    <div class="bbody">
+      <div class="bhead">
+        <h3>Cierre y Resumen del Tema</h3>
+        <span class="badge b4">Cierre</span>
+      </div>
+
+      <div class="summary">
+        <h3>Fórmulas clave — Clase 3</h3>
+        <div class="frow">
+          <div class="fchip">W = Q_H − Q_C</div>
+          <div class="fchip">e = 1 − Q_C/Q_H</div>
+          <div class="fchip">e_Carnot = 1 − T_C/T_H</div>
+          <div class="fchip">T en Kelvin siempre</div>
+        </div>
+      </div>
+
+      <div class="div">Resumen de las 3 clases</div>
+      <table>
+        <thead><tr><th>Clase</th><th>Temas</th><th>Ley central</th></tr></thead>
+        <tbody>
+          <tr><td>Clase 1</td><td>Sistemas, T°, escalas, dilatación</td><td>Ley Cero</td></tr>
+          <tr><td>Clase 2</td><td>Calor, gas ideal, procesos</td><td>Primera Ley — ΔU = Q − W</td></tr>
+          <tr class="hl"><td>Clase 3</td><td>Máquinas térmicas, Carnot</td><td>Segunda Ley — dirección y límites</td></tr>
+        </tbody>
+      </table>
+
+      <div class="div">Pregunta diagnóstica</div>
+      <div class="ex">
+        <div class="exl">🤔 Reflexión final</div>
+        <p>Una central eléctrica de carbón opera entre 550 °C y 30 °C. Su eficiencia real es 38%. ¿Cuál es la eficiencia de Carnot para esas temperaturas? ¿Qué fracción de la eficiencia ideal logra la planta real?</p>
+        <details>
+          <summary>Ver respuesta esperada</summary>
+          <div class="ans">
+            T_H = 550 + 273 = 823 K<br>
+            T_C = 30 + 273 = 303 K<br><br>
+            e_Carnot = 1 − 303/823 = 1 − 0.368 = 63.2%<br><br>
+            Fracción lograda = e_real / e_Carnot = 38% / 63.2% = <strong>60.1%</strong><br><br>
+            La planta logra el 60% de la eficiencia teórica máxima. El 40% restante se pierde por irreversibilidades reales.
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESOURCES -->
+  <div class="res-sec">
+    <h2>Recursos online <span>recomendados</span></h2>
+    <p class="sub">Simulaciones para explorar la Segunda Ley y máquinas térmicas</p>
+    <div class="rgrid">
+
+      <a class="rcard" href="https://phet.colorado.edu/sims/html/gas-properties/latest/gas-properties_es.html" target="_blank">
+        <div class="rtop"><div class="ricon">💨</div><span class="rtag t-sim">Simulación</span></div>
+        <h4>Propiedades del Gas — PhET</h4>
+        <p>Explora procesos adiabáticos e isotérmicos directamente. Conecta con el ciclo de Carnot.</p>
+        <div class="rlink">phet.colorado.edu — HTML5 · Español</div>
+      </a>
+
+      <a class="rcard" href="https://phet.colorado.edu/sims/html/energy-forms-and-changes/latest/energy-forms-and-changes_es.html" target="_blank">
+        <div class="rtop"><div class="ricon">⚡</div><span class="rtag t-sim">Simulación</span></div>
+        <h4>Formas y Cambios de Energía — PhET</h4>
+        <p>Visualiza cómo el calor se convierte en trabajo y viceversa. Primera y Segunda Ley en acción.</p>
+        <div class="rlink">phet.colorado.edu — HTML5 · Español</div>
+      </a>
+
+      <a class="rcard" href="https://phet.colorado.edu/sims/html/states-of-matter/latest/states-of-matter_es.html" target="_blank">
+        <div class="rtop"><div class="ricon">⚗️</div><span class="rtag t-sim">Simulación</span></div>
+        <h4>Estados de la Materia — PhET</h4>
+        <p>Observa la dirección natural de los procesos térmicos a nivel molecular. Segunda Ley visible.</p>
+        <div class="rlink">phet.colorado.edu — HTML5 · Español</div>
+      </a>
+
+      <a class="rcard" href="https://sites.google.com/site/smmfisicayquimica/fisica-y-quimica/energia-termica-y-calor" target="_blank">
+        <div class="rtop"><div class="ricon">📹</div><span class="rtag t-video">Videos</span></div>
+        <h4>FisQuiMat — Trabajo en sistemas PVT</h4>
+        <p>Videos en español sobre trabajo termodinámico, ciclos y procesos. Repaso integrado de los 3 temas.</p>
+        <div class="rlink">sites.google.com/smmfisicayquimica</div>
+      </a>
+
+      <a class="rcard" href="https://phet.colorado.edu/es/simulations/category/physics/heat-and-thermodynamics" target="_blank">
+        <div class="rtop"><div class="ricon">🧪</div><span class="rtag t-lab">Catálogo</span></div>
+        <h4>Catálogo completo — PhET</h4>
+        <p>Todas las simulaciones de termodinámica. Para repasar cualquier tema de las 3 clases.</p>
+        <div class="rlink">phet.colorado.edu/es — 15+ sims</div>
+      </a>
+
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
